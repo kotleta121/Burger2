@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AmbalBurger | Доставка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            color: #f0ece8;
+            padding: 0;
+            background-color: #1a1614;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://img.freepik.com/premium-photo/fast-food-pattern-with-burgers-black-background_198067-244502.jpg');
+            background-size: 300px 300px;
+            background-repeat: repeat;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .app::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(20, 18, 16, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 180, 100, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #f0ece8;
+        }
+        .logo h1 span {
+            color: #f57c3a;
+            text-shadow: 0 0 20px rgba(245, 124, 58, 0.3);
+        }
+        .logo p {
+            font-size: 0.7rem;
+            color: #a89888;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .auth-area {
+            display: flex;
+            gap: 0.7rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 180, 100, 0.2);
+            padding: 0.5rem 1.4rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #f0ece8;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: #f57c3a;
+            border: 1px solid #f57c3a;
+            color: #1a1614;
+            box-shadow: 0 0 20px rgba(245, 124, 58, 0.2);
+        }
+        .btn-primary:hover {
+            background: #ff8f4a;
+            border-color: #ff8f4a;
+            box-shadow: 0 0 30px rgba(245, 124, 58, 0.4);
+            transform: scale(1.02);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 180, 100, 0.25);
+            color: #d0c8c0;
+        }
+        .btn-outline:hover {
+            background: rgba(255, 180, 100, 0.1);
+            border-color: #f57c3a;
+        }
+        .btn-success {
+            background: #2d7a4a;
+            border: 1px solid #2d7a4a;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(45, 122, 74, 0.2);
+        }
+        .btn-success:hover {
+            background: #3a8f58;
+            border-color: #3a8f58;
+        }
+        .btn-danger {
+            background: rgba(180, 60, 40, 0.3);
+            border: 1px solid rgba(180, 60, 40, 0.4);
+            color: #ff9a7a;
+        }
+        .btn-danger:hover {
+            background: rgba(180, 60, 40, 0.5);
+            border-color: #c3452b;
+        }
+        .btn-sm {
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
+        }
+        .btn-tab {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #a89888;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+        }
+        .btn-tab:hover {
+            color: #f0ece8;
+        }
+        .btn-tab.active {
+            color: #f57c3a;
+            border-bottom-color: #f57c3a;
+        }
+        .welcome-text {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.3rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #d0c8c0;
+            border: 1px solid rgba(255, 180, 100, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #24201c;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 180, 100, 0.15);
+        }
+        .modal-content h3 {
+            margin-bottom: 1.2rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #f0ece8;
+        }
+        .modal-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 180, 100, 0.15);
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            color: #f0ece8;
+            outline: none;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            transition: 0.2s;
+        }
+        .modal-input:focus {
+            border-color: #f57c3a;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .error-msg {
+            color: #ff7a5a;
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid rgba(255, 180, 100, 0.1);
+            margin-bottom: 1.5rem;
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 16px 16px 0 0;
+            padding: 0 1rem;
+            overflow-x: auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .builder-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .ingredients-panel {
+            flex: 1.2;
+            min-width: 280px;
+            background: rgba(20, 18, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 180, 100, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .burger-preview {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(20, 18, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 180, 100, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-left: 3px solid #f57c3a;
+            padding-left: 0.8rem;
+            margin-bottom: 1rem;
+            color: #f0ece8;
+            letter-spacing: -0.2px;
+        }
+        .sub-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 1rem 0 0.6rem 0;
+            color: #a89888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ingrid-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .ingrid-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 0.6rem 0.3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+        }
+        .ingrid-card:hover {
+            background: rgba(245, 124, 58, 0.12);
+            border-color: rgba(245, 124, 58, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 124, 58, 0.1);
+        }
+        .ingrid-name {
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: #d0c8c0;
+            line-height: 1.2;
+        }
+        .ingrid-price {
+            font-size: 0.65rem;
+            color: #a89888;
+            margin-top: 2px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 0.8rem 0 0.2rem;
+        }
+        .action-buttons .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        .burger-stack {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+            margin-bottom: 0.6rem;
+        }
+        .ingredient-layer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 2px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.25rem 0.7rem;
+            font-size: 0.78rem;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+            color: #d0c8c0;
+        }
+        .layer-remove {
+            background: none;
+            border: none;
+            color: #ff7a5a;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0 5px;
+            transition: 0.2s;
+        }
+        .layer-remove:hover {
+            color: #ff3a1a;
+        }
+        .empty-burger {
+            text-align: center;
+            color: #7a6c60;
+            padding: 1rem 0.5rem;
+            font-size: 0.85rem;
+        }
+        .total-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 180, 100, 0.1);
+            padding-top: 0.6rem;
+            margin-top: 0.4rem;
+            color: #f0ece8;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .menu-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 180, 100, 0.08);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(4px);
+        }
+        .menu-item:hover {
+            transform: translateY(-3px);
+            background: rgba(245, 124, 58, 0.08);
+            border-color: rgba(245, 124, 58, 0.25);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .menu-item .item-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #f0ece8;
+        }
+        .menu-item .item-desc {
+            font-size: 0.7rem;
+            color: #a89888;
+            margin: 4px 0;
+            line-height: 1.3;
+            flex: 1;
+        }
+        .menu-item .item-price {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #f57c3a;
+            margin-top: 6px;
+        }
+        .menu-item .add-btn {
+            margin-top: 8px;
+            width: 100%;
+            padding: 0.3rem;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .extra-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-top: 0.6rem;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+        }
+        .extra-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.3rem;
+        }
+        .extra-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 0.25rem 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+            font-size: 0.78rem;
+            color: #d0c8c0;
+        }
+        .extra-item:hover {
+            background: rgba(245, 124, 58, 0.08);
+            border-color: rgba(245, 124, 58, 0.2);
+        }
+        .extra-item.active {
+            background: #f57c3a;
+            border-color: #f57c3a;
+            color: #1a1614;
+        }
+        .extra-price {
+            font-size: 0.65rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .delivery-block {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-top: 0.6rem;
+            border: 1px solid rgba(255, 180, 100, 0.06);
+        }
+        .delivery-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.3rem;
+        }
+        .delivery-row input {
+            flex: 1;
+            min-width: 140px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 180, 100, 0.1);
+            padding: 0.4rem 0.7rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            outline: none;
+            color: #f0ece8;
+        }
+        .delivery-row input:focus {
+            border-color: #f57c3a;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .delivery-info {
+            font-size: 0.75rem;
+            color: #a89888;
+            margin-top: 0.3rem;
+        }
+
+        .map-container {
+            margin-top: 0.6rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 180, 100, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            padding: 6px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .map-zone {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 0.8rem 0.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.7rem;
+            border: 2px solid transparent;
+            min-height: 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            color: #a89888;
+        }
+        .map-zone:hover {
+            background: rgba(245, 124, 58, 0.08);
+            border-color: rgba(245, 124, 58, 0.2);
+        }
+        .map-zone.active {
+            border-color: #f57c3a;
+            background: rgba(245, 124, 58, 0.12);
+            box-shadow: 0 0 20px rgba(245, 124, 58, 0.1);
+            color: #f0ece8;
+        }
+        .map-zone .zone-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #d0c8c0;
+        }
+        .map-zone .zone-price {
+            font-size: 0.65rem;
+        }
+        .map-zone .zone-dist {
+            font-size: 0.55rem;
+            opacity: 0.7;
+        }
+        .map-legend {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.65rem;
+            color: #a89888;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(255, 180, 100, 0.06);
+        }
+        .map-legend .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 3px;
+        }
+        .map-legend .dot.green { background: #4a9e6b; }
+        .map-legend .dot.yellow { background: #d4a843; }
+        .map-legend .dot.orange { background: #d47a3e; }
+        .map-legend .dot.red { background: #c3452b; }
+
+        .total-all {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            border-top: 2px solid #f57c3a;
+            padding-top: 0.6rem;
+            margin-top: 0.6rem;
+            color: #f0ece8;
+        }
+        .total-all span:last-child {
+            color: #f57c3a;
+        }
+
+        .saved-section {
+            margin-top: 2rem;
+            background: rgba(20, 18, 16, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 180, 100, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .history-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        .burger-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            width: 200px;
+            cursor: pointer;
+            border-left: 3px solid #f57c3a;
+            transition: 0.2s;
+        }
+        .burger-card:hover {
+            background: rgba(245, 124, 58, 0.06);
+            transform: translateX(4px);
+        }
+        .burger-card-title {
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            color: #f0ece8;
+            font-size: 0.85rem;
+        }
+        .delete-burger {
+            background: none;
+            border: none;
+            color: #ff7a5a;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .delete-burger:hover {
+            color: #ff3a1a;
+        }
+        .empty-history {
+            color: #7a6c60;
+            padding: 0.6rem 0.2rem;
+            font-size: 0.9rem;
+        }
+
+        .order-btn {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-top: 0.8rem;
+            background: #f57c3a;
+            border: none;
+            color: #1a1614;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 30px rgba(245, 124, 58, 0.15);
+        }
+        .order-btn:hover {
+            background: #ff8f4a;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(245, 124, 58, 0.3);
+        }
+
+        @media (max-width: 800px) {
+            .app { padding: 0.8rem; }
+            .map-grid { grid-template-columns: repeat(2, 1fr); }
+            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .ingrid-grid { grid-template-columns: repeat(2, 1fr); }
+            .header { padding: 0.8rem 1rem; }
+        }
+        @media (max-width: 500px) {
+            .map-grid { grid-template-columns: 1fr; }
+            .tabs { padding: 0 0.5rem; }
+            .btn-tab { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+            .ingrid-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <div class="logo">
+            <h1><span>Ambal</span>Burger</h1>
+            <p>доставка бургеров</p>
+        </div>
+        <div class="auth-area" id="authSection">
+            <span id="userWelcome" class="welcome-text"></span>
+            <button id="showLoginModalBtn" class="btn btn-primary">Войти</button>
+            <button id="showRegisterModalBtn" class="btn btn-outline">Регистрация</button>
+            <button id="logoutBtn" class="btn btn-outline" style="display: none;">Выйти</button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="btn-tab active" data-tab="tab-constructor">Конструктор</button>
+        <button class="btn-tab" data-tab="tab-menu">Меню</button>
+    </div>
+
+    <div id="tab-constructor" class="tab-content active">
+        <div class="builder-layout">
+            <div class="ingredients-panel">
+                <div class="section-title">Выбери основу</div>
+                <div id="meatsGroup" class="ingrid-grid"></div>
+                <div class="sub-title">Добавки</div>
+                <div id="toppingsGroup" class="ingrid-grid"></div>
+                <div class="sub-title">Соусы</div>
+                <div id="saucesGroup" class="ingrid-grid"></div>
+                <div class="action-buttons">
+                    <button id="resetBurgerBtn" class="btn btn-danger btn-sm">Сбросить</button>
+                    <button id="saveBurgerBtn" class="btn btn-primary btn-sm">Сохранить</button>
+                </div>
+            </div>
+
+            <div class="burger-preview">
+                <div class="section-title">Ваш заказ</div>
+                <div class="burger-stack" id="burgerStackContainer"></div>
+                <div class="total-price">
+                    <span>Бургер</span>
+                    <span id="totalPriceDisplay">0 ₽</span>
+                </div>
+
+                <div class="extra-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="sub-title" style="margin:0;">Напитки</span>
+                        <span id="drinksTotalDisplay" style="background:rgba(255,255,255,0.04); padding:0.15rem 0.7rem; border-radius:8px; font-size:0.8rem;">+0 ₽</span>
+                    </div>
+                    <div class="extra-grid" id="drinksContainer"></div>
+                </div>
+
+                <div class="extra-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="sub-title" style="margin:0;">Снэки</span>
+                        <span id="snacksTotalDisplay" style="background:rgba(255,255,255,0.04); padding:0.15rem 0.7rem; border-radius:8px; font-size:0.8rem;">+0 ₽</span>
+                    </div>
+                    <div class="extra-grid" id="snacksContainer"></div>
+                </div>
+
+                <div class="delivery-block">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="sub-title" style="margin:0;">Доставка</span>
+                        <span id="deliveryPriceDisplay" style="background:rgba(255,255,255,0.04); padding:0.15rem 0.7rem; border-radius:8px; font-size:0.8rem;">0 ₽</span>
+                    </div>
+                    <div class="map-container">
+                        <div class="map-grid" id="mapGrid"></div>
+                        <div class="map-legend">
+                            <span><span class="dot green"></span> 0-2 км</span>
+                            <span><span class="dot yellow"></span> 2-4 км</span>
+                            <span><span class="dot orange"></span> 4-6 км</span>
+                            <span><span class="dot red"></span> 6+ км</span>
+                            <span style="margin-left:auto;">Ресторан в центре</span>
+                        </div>
+                    </div>
+                    <div class="delivery-row">
+                        <input type="text" id="deliveryAddress" placeholder="Ваш адрес" value="Центральный район">
+                        <button id="calcDeliveryBtn" class="btn btn-primary btn-sm">Обновить</button>
+                    </div>
+                    <div class="delivery-info" id="deliveryInfo">Центр · 0.5 км · 50 ₽</div>
+                </div>
+
+                <div class="total-all">
+                    <span>Итог</span>
+                    <span id="finalTotalDisplay">0 ₽</span>
+                </div>
+                <button id="orderBtn" class="order-btn">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-menu" class="tab-content">
+        <div class="section-title">Наше меню</div>
+        <p style="color:#a89888; font-size:0.85rem; margin-bottom:1rem;">Нажмите на любой бургер, чтобы добавить его в заказ</p>
+        <div class="menu-grid" id="menuGrid"></div>
+    </div>
+
+    <div class="saved-section">
+        <div class="section-title">Мои рецепты</div>
+        <div id="savedBurgersContainer" class="history-grid">
+            <div class="empty-history">Войдите, чтобы сохранять рецепты</div>
+        </div>
+    </div>
+</div>
+
+<div id="loginModal" class="modal"><div class="modal-content"><h3>Вход</h3><input type="email" id="loginEmail" class="modal-input" placeholder="Электронная почта"><input type="password" id="loginPassword" class="modal-input" placeholder="Пароль"><div id="loginError" class="error-msg"></div><div class="modal-buttons"><button id="closeLoginModal" class="btn btn-outline">Отмена</button><button id="submitLoginBtn" class="btn btn-primary">Войти</button></div></div></div>
+<div id="registerModal" class="modal"><div class="modal-content"><h3>Регистрация</h3><input type="email" id="regEmail" class="modal-input" placeholder="Электронная почта"><input type="text" id="regNickname" class="modal-input" placeholder="Никнейм"><input type="password" id="regPassword" class="modal-input" placeholder="Пароль (мин. 4)"><div id="registerError" class="error-msg"></div><div class="modal-buttons"><button id="closeRegisterModal" class="btn btn-outline">Отмена</button><button id="submitRegisterBtn" class="btn btn-primary">Создать</button></div></div></div>
+
+<script>
+    const COMBOS = [
+        { id: 'classic', name: 'Классический', desc: 'Говяжья котлета, сыр чеддер, салат, помидор, соус BBQ', ingredients: ['beef', 'cheese', 'lettuce', 'tomato', 'sauce_bbq', 'top_bun', 'bottom_bun'], price: 280, category: 'Классические' },
+        { id: 'double', name: 'Двойной', desc: 'Двойная говядина, сыр чеддер, бекон, лук, соус ранч', ingredients: ['double_beef', 'cheese', 'bacon', 'onion', 'sauce_ranch', 'top_bun', 'bottom_bun'], price: 380, category: 'Классические' },
+        { id: 'cheese', name: 'Сырный', desc: 'Говяжья котлета, сыр чеддер, сыр с плесенью, моцарелла, соус сырный', ingredients: ['beef', 'cheese', 'cheese_blue', 'cheese_mozzarella', 'sauce_cheese', 'top_bun', 'bottom_bun'], price: 350, category: 'Классические' },
+        { id: 'bacon', name: 'Беконный', desc: 'Говяжья котлета, бекон, сыр чеддер, лук карамельный, соус горчично-медовый', ingredients: ['beef', 'bacon', 'cheese', 'onion', 'sauce_honey', 'top_bun', 'bottom_bun'], price: 320, category: 'Классические' },
+        { id: 'chicken_classic', name: 'Куриный классический', desc: 'Куриная котлета, сыр чеддер, салат, помидор, соус ранч', ingredients: ['chicken', 'cheese', 'lettuce', 'tomato', 'sauce_ranch', 'top_bun', 'bottom_bun'], price: 260, category: 'Куриные' },
+        { id: 'chicken_spicy', name: 'Куриный острый', desc: 'Куриная котлета, халапеньо, сыр чеддер, соус острый чили, салат', ingredients: ['chicken', 'jalapeno', 'cheese', 'sauce_spicy', 'lettuce', 'top_bun', 'bottom_bun'], price: 280, category: 'Куриные' },
+        { id: 'chicken_bacon', name: 'Куриный с беконом', desc: 'Куриная котлета, бекон, сыр чеддер, салат, соус BBQ', ingredients: ['chicken', 'bacon', 'cheese', 'lettuce', 'sauce_bbq', 'top_bun', 'bottom_bun'], price: 300, category: 'Куриные' },
+        { id: 'chicken_avocado', name: 'Куриный с авокадо', desc: 'Куриная котлета, авокадо, сыр моцарелла, салат, соус чесночный', ingredients: ['chicken', 'avocado', 'cheese_mozzarella', 'lettuce', 'sauce_garlic', 'top_bun', 'bottom_bun'], price: 310, category: 'Куриные' },
+        { id: 'vegan_classic', name: 'Веганский классический', desc: 'Веган-котлета, салат, помидор, лук, соус BBQ', ingredients: ['vegan', 'lettuce', 'tomato', 'onion', 'sauce_bbq', 'top_bun', 'bottom_bun'], price: 270, category: 'Веганские' },
+        { id: 'vegan_avocado', name: 'Веганский с авокадо', desc: 'Веган-котлета, авокадо, салат, помидор, соус ранч', ingredients: ['vegan', 'avocado', 'lettuce', 'tomato', 'sauce_ranch', 'top_bun', 'bottom_bun'], price: 300, category: 'Веганские' },
+        { id: 'vegan_spicy', name: 'Веганский острый', desc: 'Веган-котлета, халапеньо, салат, соус острый чили', ingredients: ['vegan', 'jalapeno', 'lettuce', 'sauce_spicy', 'top_bun', 'bottom_bun'], price: 280, category: 'Веганские' },
+        { id: 'vegan_mushroom', name: 'Веганский с грибами', desc: 'Веган-котлета, грибы, карамелизованный лук, соус чесночный', ingredients: ['vegan', 'mushrooms', 'onion', 'sauce_garlic', 'top_bun', 'bottom_bun'], price: 290, category: 'Веганские' },
+        { id: 'steakhouse', name: 'Стейк-хаус', desc: 'Говяжья котлета, двойная порция сыра, бекон, грибы, соус трюфельный', ingredients: ['double_beef', 'cheese', 'cheese_blue', 'bacon', 'mushrooms', 'sauce_truffle', 'top_bun', 'bottom_bun'], price: 420, category: 'Эксклюзивные' },
+        { id: 'breakfast', name: 'Завтрак', desc: 'Говяжья котлета, яйцо пашот, бекон, сыр чеддер, соус горчично-медовый', ingredients: ['beef', 'egg', 'bacon', 'cheese', 'sauce_honey', 'top_bun', 'bottom_bun'], price: 340, category: 'Эксклюзивные' },
+        { id: 'hawaiian', name: 'Гавайский', desc: 'Куриная котлета, ананас, сыр моцарелла, соус BBQ', ingredients: ['chicken', 'pineapple', 'cheese_mozzarella', 'sauce_bbq', 'top_bun', 'bottom_bun'], price: 310, category: 'Эксклюзивные' },
+        { id: 'mexican', name: 'Мексиканский', desc: 'Говяжья котлета, халапеньо, сыр чеддер, салат, соус острый чили', ingredients: ['beef', 'jalapeno', 'cheese', 'lettuce', 'sauce_spicy', 'top_bun', 'bottom_bun'], price: 320, category: 'Эксклюзивные' },
+        { id: 'truffle', name: 'Трюфельный', desc: 'Говяжья котлета, сыр с плесенью, грибы, трюфельный соус', ingredients: ['beef', 'cheese_blue', 'mushrooms', 'sauce_truffle', 'top_bun', 'bottom_bun'], price: 370, category: 'Эксклюзивные' },
+        { id: 'fish_classic', name: 'Рыбный классический', desc: 'Рыбная котлета, салат, помидор, соус тартар', ingredients: ['fish', 'lettuce', 'tomato', 'sauce_thousand', 'top_bun', 'bottom_bun'], price: 290, category: 'Рыбные' },
+        { id: 'fish_cheese', name: 'Рыбный с сыром', desc: 'Рыбная котлета, сыр чеддер, салат, соус ранч', ingredients: ['fish', 'cheese', 'lettuce', 'sauce_ranch', 'top_bun', 'bottom_bun'], price: 310, category: 'Рыбные' },
+        { id: 'spicy_double', name: 'Острый двойной', desc: 'Двойная говядина, халапеньо, сыр чеддер, соус острый чили', ingredients: ['double_beef', 'jalapeno', 'cheese', 'sauce_spicy', 'top_bun', 'bottom_bun'], price: 390, category: 'Острые' },
+        { id: 'spicy_chicken', name: 'Острый куриный', desc: 'Куриная котлета, халапеньо, сыр чеддер, соус острый чили', ingredients: ['chicken', 'jalapeno', 'cheese', 'sauce_spicy', 'top_bun', 'bottom_bun'], price: 290, category: 'Острые' }
+    ];
+
+    const DELIVERY_ZONES = [
+        { id: 'center', name: 'Центр', dist: 0.5, price: 50 },
+        { id: 'north', name: 'Северный', dist: 2.1, price: 90 },
+        { id: 'south', name: 'Южный', dist: 3.8, price: 130 },
+        { id: 'east', name: 'Восточный', dist: 4.2, price: 150 },
+        { id: 'west', name: 'Западный', dist: 3.5, price: 120 },
+        { id: 'north_east', name: 'Северо-Восток', dist: 5.5, price: 180 },
+        { id: 'south_west', name: 'Юго-Запад', dist: 6.2, price: 210 },
+        { id: 'north_west', name: 'Северо-Запад', dist: 5.8, price: 190 },
+        { id: 'south_east', name: 'Юго-Восток', dist: 7.0, price: 240 },
+        { id: 'far_north', name: 'Дальний Север', dist: 8.5, price: 280 },
+        { id: 'far_south', name: 'Дальний Юг', dist: 9.2, price: 310 },
+        { id: 'far_east', name: 'Дальний Восток', dist: 10.0, price: 340 }
+    ];
+
+    const MEATS = [
+        { id: "beef", name: "Говяжья котлета", price: 110 },
+        { id: "chicken", name: "Куриная котлета", price: 95 },
+        { id: "turkey", name: "Котлета из индейки", price: 100 },
+        { id: "vegan", name: "Веганская котлета", price: 110 },
+        { id: "double_beef", name: "Двойная говядина", price: 180 },
+        { id: "pork", name: "Свиная котлета", price: 105 },
+        { id: "lamb", name: "Баранина", price: 130 },
+        { id: "fish", name: "Рыбная котлета", price: 120 }
+    ];
+    const TOPPINGS = [
+        { id: "bottom_bun", name: "Нижняя булка", price: 35 },
+        { id: "top_bun", name: "Верхняя булка", price: 35 },
+        { id: "cheese", name: "Сыр чеддер", price: 50 },
+        { id: "cheese_blue", name: "Сыр с плесенью", price: 65 },
+        { id: "cheese_mozzarella", name: "Моцарелла", price: 60 },
+        { id: "lettuce", name: "Айсберг", price: 25 },
+        { id: "tomato", name: "Помидор", price: 30 },
+        { id: "bacon", name: "Бекон", price: 75 },
+        { id: "onion", name: "Карамелизованный лук", price: 25 },
+        { id: "pickle", name: "Корнишоны", price: 20 },
+        { id: "jalapeno", name: "Халапеньо", price: 30 },
+        { id: "egg", name: "Яйцо пашот", price: 55 },
+        { id: "avocado", name: "Авокадо", price: 70 },
+        { id: "mushrooms", name: "Грибы", price: 40 },
+        { id: "pineapple", name: "Ананас", price: 45 },
+        { id: "sauerkraut", name: "Квашеная капуста", price: 30 }
+    ];
+    const SAUCES = [
+        { id: "sauce_bbq", name: "BBQ соус", price: 30 },
+        { id: "sauce_garlic", name: "Чесночный", price: 25 },
+        { id: "sauce_cheese", name: "Сырный соус", price: 35 },
+        { id: "sauce_truffle", name: "Трюфельный майонез", price: 55 },
+        { id: "sauce_spicy", name: "Острый чили", price: 25 },
+        { id: "sauce_honey", name: "Горчично-медовый", price: 30 },
+        { id: "sauce_mustard", name: "Дижонская горчица", price: 25 },
+        { id: "sauce_ranch", name: "Ранч", price: 30 },
+        { id: "sauce_thousand", name: "Тысяча островов", price: 30 }
+    ];
+    const ALL_INGREDIENTS = [...MEATS, ...TOPPINGS, ...SAUCES];
+
+    const DRINKS = [
+        { id: "cola", name: "Кола", price: 90 },
+        { id: "cola_zero", name: "Кола Zero", price: 90 },
+        { id: "sprite", name: "Спрайт", price: 90 },
+        { id: "fanta", name: "Фанта", price: 90 },
+        { id: "water", name: "Вода", price: 60 },
+        { id: "juice_apple", name: "Яблочный сок", price: 110 },
+        { id: "juice_orange", name: "Апельсиновый сок", price: 110 },
+        { id: "milkshake", name: "Молочный коктейль", price: 150 },
+        { id: "tea", name: "Чай", price: 70 },
+        { id: "coffee", name: "Кофе", price: 80 }
+    ];
+    const SNACKS = [
+        { id: "fries", name: "Картофель фри", price: 100 },
+        { id: "fries_large", name: "Фри (большой)", price: 140 },
+        { id: "nuggets", name: "Наггетсы (6 шт)", price: 140 },
+        { id: "nuggets_large", name: "Наггетсы (12 шт)", price: 240 },
+        { id: "rings", name: "Луковые кольца", price: 120 },
+        { id: "cheese_sticks", name: "Сырные палочки", price: 130 },
+        { id: "potato_wedges", name: "Картофель по-деревенски", price: 110 },
+        { id: "onion_rings_large", name: "Кольца (большие)", price: 170 },
+        { id: "mozzarella_sticks", name: "Палочки моцареллы", price: 150 },
+        { id: "chicken_wings", name: "Куриные крылышки", price: 180 }
+    ];
+
+    let currentUser = null;
+    let currentBurgerIngredients = [];
+    let selectedDrinks = new Set();
+    let selectedSnacks = new Set();
+    let selectedZone = DELIVERY_ZONES[0];
+    let deliveryAddress = "Центральный район";
+
+    const STORAGE_USERS_KEY = 'burger_app_users_v7';
+    const STORAGE_SESSION_KEY = 'burger_session_email';
+
+    function loadUsers() { return JSON.parse(localStorage.getItem(STORAGE_USERS_KEY) || '{}'); }
+    function saveUsers(users) { localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users)); }
+    function saveSession(email) { email ? localStorage.setItem(STORAGE_SESSION_KEY, email) : localStorage.removeItem(STORAGE_SESSION_KEY); }
+    
+    function restoreSession() {
+        const savedEmail = localStorage.getItem(STORAGE_SESSION_KEY);
+        if (savedEmail) {
+            const users = loadUsers();
+            if (users[savedEmail]) {
+                currentUser = { ...users[savedEmail] };
+                if (!currentUser.burgers) currentUser.burgers = [];
+                return true;
+            } else saveSession(null);
+        }
+        return false;
+    }
+
+    function register(email, nickname, password) {
+        const users = loadUsers();
+        const e = email.trim().toLowerCase();
+        const n = nickname.trim();
+        const p = password.trim();
+        if (!e || !n || !p) return { success: false, message: "Заполните все поля" };
+        if (p.length < 4) return { success: false, message: "Пароль ≥4 символов" };
+        if (!e.includes('@')) return { success: false, message: "Некорректная почта" };
+        if (users[e]) return { success: false, message: "Почта уже используется" };
+        for (let key in users) if (users[key].nickname === n) return { success: false, message: "Никнейм занят" };
+        const newUser = { email: e, nickname: n, password: p, burgers: [] };
+        users[e] = newUser;
+        saveUsers(users);
+        return { success: true, user: newUser };
+    }
+    
+    function login(email, password) {
+        const users = loadUsers();
+        const e = email.trim().toLowerCase();
+        const user = users[e];
+        if (!user) return { success: false, message: "Пользователь не найден" };
+        if (user.password !== password.trim()) return { success: false, message: "Неверный пароль" };
+        return { success: true, user: { ...user } };
+    }
+    
+    function setCurrentUser(user) {
+        currentUser = user;
+        if (user) { saveSession(user.email); } 
+        else { saveSession(null); currentBurgerIngredients = []; selectedDrinks.clear(); selectedSnacks.clear(); renderAll(); }
+        updateAuthUI();
+        updateBurgerPreview();
+        renderSavedBurgers();
+        updateTotals();
+    }
+    function logout() { setCurrentUser(null); }
+    
+    function updateAuthUI() {
+        const welcomeSpan = document.getElementById('userWelcome');
+        const loginBtn = document.getElementById('showLoginModalBtn');
+        const regBtn = document.getElementById('showRegisterModalBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (currentUser) {
+            welcomeSpan.innerText = currentUser.nickname;
+            loginBtn.style.display = 'none';
+            regBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+        } else {
+            welcomeSpan.innerText = '';
+            loginBtn.style.display = 'inline-block';
+            regBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+        }
+    }
+
+    function addIngredient(ing) {
+        currentBurgerIngredients.push({ ...ing });
+        updateBurgerPreview();
+    }
+    
+    function updateBurgerPreview() {
+        const stackDiv = document.getElementById('burgerStackContainer');
+        const totalSpan = document.getElementById('totalPriceDisplay');
+        let total = currentBurgerIngredients.reduce((s, i) => s + i.price, 0);
+        totalSpan.innerText = total + " ₽";
+        
+        if (!currentBurgerIngredients.length) {
+            stackDiv.innerHTML = `<div class="empty-burger">Выберите ингредиенты или перейдите в меню</div>`;
+        } else {
+            let layers = '';
+            [...currentBurgerIngredients].reverse().forEach(ing => {
+                layers += `<div class="ingredient-layer"><span>${ing.name}</span><button class="layer-remove" data-id="${ing.id}" data-name="${ing.name}">✕</button></div>`;
+            });
+            stackDiv.innerHTML = layers;
+            document.querySelectorAll('.layer-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id');
+                    const idx = currentBurgerIngredients.findIndex(i => i.id === id);
+                    if (idx !== -1) currentBurgerIngredients.splice(idx, 1);
+                    else {
+                        const name = btn.getAttribute('data-name');
+                        const idx2 = currentBurgerIngredients.findIndex(i => i.name === name);
+                        if(idx2 !== -1) currentBurgerIngredients.splice(idx2,1);
+                    }
+                    updateBurgerPreview();
+                    updateTotals();
+                });
+            });
+        }
+        updateTotals();
+    }
+    
+    function resetBurger() { currentBurgerIngredients = []; updateBurgerPreview(); }
+    
+    function loadCombo(combo) {
+        currentBurgerIngredients = [];
+        combo.ingredients.forEach(id => {
+            const ing = ALL_INGREDIENTS.find(i => i.id === id);
+            if (ing) currentBurgerIngredients.push({ ...ing });
+        });
+        switchTab('tab-constructor');
+        updateBurgerPreview();
+        updateTotals();
+    }
+    
+    function saveBurger() {
+        if (!currentUser) { alert("Войдите в аккаунт!"); return; }
+        if (!currentBurgerIngredients.length) { alert("Соберите бургер!"); return; }
+        const total = currentBurgerIngredients.reduce((s,i)=>s+i.price,0);
+        const ingNames = currentBurgerIngredients.map(i=>i.name);
+        const fullIds = currentBurgerIngredients.map(i=>i.id);
+        const newBurger = {
+            name: `Бургер ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`,
+            ingredients: ingNames,
+            total: total,
+            timestamp: Date.now(),
+            fullData: fullIds
+        };
+        const users = loadUsers();
+        if (users[currentUser.email]) {
+            users[currentUser.email].burgers.push(newBurger);
+            saveUsers(users);
+            currentUser = { ...users[currentUser.email] };
+            renderSavedBurgers();
+            alert("Рецепт сохранён!");
+        } else alert("Ошибка сохранения");
+    }
+    
+    function renderSavedBurgers() {
+        const container = document.getElementById('savedBurgersContainer');
+        if (!container) return;
+        if (!currentUser || !currentUser.burgers?.length) {
+            container.innerHTML = `<div class="empty-history">Нет сохранённых рецептов</div>`;
+            return;
+        }
+        container.innerHTML = '';
+        [...currentUser.burgers].reverse().forEach(b => {
+            const card = document.createElement('div');
+            card.className = 'burger-card';
+            card.innerHTML = `<div class="burger-card-title"><span>${b.name}</span><button class="delete-burger" data-time="${b.timestamp}">✕</button></div><div style="font-size:0.65rem; color:#a89888;">${b.ingredients.slice(0,2).join(', ')}${b.ingredients.length>2?'...':''}</div><div style="font-size:0.6rem; color:#7a6c60;">${new Date(b.timestamp).toLocaleString()} · ${b.total} ₽</div>`;
+            card.addEventListener('click', (e) => { 
+                if(e.target.classList.contains('delete-burger')) return;
+                if(b.fullData) {
+                    const restored = b.fullData.map(id => ALL_INGREDIENTS.find(i=>i.id===id)).filter(x=>x);
+                    if(restored.length) { 
+                        currentBurgerIngredients = restored.map(i=>({...i})); 
+                        updateBurgerPreview(); 
+                    }
+                }
+            });
+            container.appendChild(card);
+        });
+        document.querySelectorAll('.delete-burger').forEach(btn=>{
+            btn.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                const ts = parseInt(btn.getAttribute('data-time'));
+                if(currentUser && currentUser.burgers){
+                    const idx = currentUser.burgers.findIndex(b=>b.timestamp===ts);
+                    if(idx!==-1){
+                        currentUser.burgers.splice(idx,1);
+                        const users = loadUsers();
+                        if(users[currentUser.email]){ 
+                            users[currentUser.email].burgers = currentUser.burgers; 
+                            saveUsers(users); 
+                            renderSavedBurgers(); 
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    function renderMenu() {
+        const container = document.getElementById('menuGrid');
+        container.innerHTML = '';
+        const categories = {};
+        COMBOS.forEach(combo => {
+            if (!categories[combo.category]) categories[combo.category] = [];
+            categories[combo.category].push(combo);
+        });
+        
+        Object.keys(categories).forEach(cat => {
+            const catDiv = document.createElement('div');
+            catDiv.style.gridColumn = '1 / -1';
+            catDiv.style.marginTop = '0.5rem';
+            catDiv.innerHTML = `<h3 style="font-size:0.9rem; color:#a89888; text-transform:uppercase; letter-spacing:0.5px;">${cat}</h3>`;
+            container.appendChild(catDiv);
+            
+            categories[cat].forEach(combo => {
+                const item = document.createElement('div');
+                item.className = 'menu-item';
+                item.innerHTML = `
+                    <div class="item-name">${combo.name}</div>
+                    <div class="item-desc">${combo.desc}</div>
+                    <div class="item-price">${combo.price} ₽</div>
+                    <button class="btn btn-primary add-btn">Выбрать</button>
+                `;
+                item.querySelector('.add-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    loadCombo(combo);
+                });
+                item.addEventListener('click', () => loadCombo(combo));
+                container.appendChild(item);
+            });
+        });
+    }
+
+    function renderMap() {
+        const grid = document.getElementById('mapGrid');
+        grid.innerHTML = '';
+        DELIVERY_ZONES.forEach(zone => {
+            const div = document.createElement('div');
+            div.className = `map-zone ${selectedZone.id === zone.id ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="zone-name">${zone.name}</div>
+                <div class="zone-price">${zone.price} ₽</div>
+                <div class="zone-dist">${zone.dist.toFixed(1)} км</div>
+            `;
+            div.addEventListener('click', () => {
+                selectedZone = zone;
+                deliveryAddress = `${zone.name} район (${zone.dist.toFixed(1)} км)`;
+                document.getElementById('deliveryAddress').value = deliveryAddress;
+                renderMap();
+                updateTotals();
+            });
+            grid.appendChild(div);
+        });
+    }
+
+    function renderDrinks() {
+        const container = document.getElementById('drinksContainer');
+        container.innerHTML = '';
+        DRINKS.forEach(item => {
+            const btn = document.createElement('div');
+            btn.className = `extra-item ${selectedDrinks.has(item.id) ? 'active' : ''}`;
+            btn.innerHTML = `<span>${item.name}</span><span class="extra-price">+${item.price}₽</span>`;
+            btn.addEventListener('click', () => {
+                if(selectedDrinks.has(item.id)) selectedDrinks.delete(item.id);
+                else selectedDrinks.add(item.id);
+                renderDrinks();
+                updateTotals();
+            });
+            container.appendChild(btn);
+        });
+    }
+
+    function renderSnacks() {
+        const container = document.getElementById('snacksContainer');
+        container.innerHTML = '';
+        SNACKS.forEach(item => {
+            const btn = document.createElement('div');
+            btn.className = `extra-item ${selectedSnacks.has(item.id) ? 'active' : ''}`;
+            btn.innerHTML = `<span>${item.name}</span><span class="extra-price">+${item.price}₽</span>`;
+            btn.addEventListener('click', () => {
+                if(selectedSnacks.has(item.id)) selectedSnacks.delete(item.id);
+                else selectedSnacks.add(item.id);
+                renderSnacks();
+                updateTotals();
+            });
+            container.appendChild(btn);
+        });
+    }
+
+    function getDrinksTotal() {
+        let total = 0;
+        selectedDrinks.forEach(id => {
+            const item = DRINKS.find(s=>s.id===id);
+            if(item) total += item.price;
+        });
+        return total;
+    }
+
+    function getSnacksTotal() {
+        let total = 0;
+        selectedSnacks.forEach(id => {
+            const item = SNACKS.find(s=>s.id===id);
+            if(item) total += item.price;
+        });
+        return total;
+    }
+
+    function updateTotals() {
+        const burgerTotal = currentBurgerIngredients.reduce((s,i)=>s+i.price,0);
+        const drinksTotal = getDrinksTotal();
+        const snacksTotal = getSnacksTotal();
+        const delivery = selectedZone;
+        
+        document.getElementById('drinksTotalDisplay').innerText = `+${drinksTotal} ₽`;
+        document.getElementById('snacksTotalDisplay').innerText = `+${snacksTotal} ₽`;
+        document.getElementById('deliveryPriceDisplay').innerText = `${delivery.price} ₽`;
+        document.getElementById('deliveryInfo').innerText = `${delivery.name} · ${delivery.dist.toFixed(1)} км · ${delivery.price} ₽`;
+        document.getElementById('totalPriceDisplay').innerText = burgerTotal + " ₽";
+        
+        const finalTotal = burgerTotal + drinksTotal + snacksTotal + delivery.price;
+        document.getElementById('finalTotalDisplay').innerText = finalTotal + " ₽";
+    }
+
+    function renderAll() {
+        renderMenu();
+        renderMap();
+        renderDrinks();
+        renderSnacks();
+        updateTotals();
+    }
+
+    function renderIngredientGroups() {
+        const meatsDiv = document.getElementById('meatsGroup');
+        const toppingsDiv = document.getElementById('toppingsGroup');
+        const saucesDiv = document.getElementById('saucesGroup');
+        meatsDiv.innerHTML = ''; toppingsDiv.innerHTML = ''; saucesDiv.innerHTML = '';
+        MEATS.forEach(m => { meatsDiv.appendChild(makeIngCard(m)); });
+        TOPPINGS.forEach(t => { toppingsDiv.appendChild(makeIngCard(t)); });
+        SAUCES.forEach(s => { saucesDiv.appendChild(makeIngCard(s)); });
+    }
+    
+    function makeIngCard(ing) {
+        const div = document.createElement('div');
+        div.className = 'ingrid-card';
+        div.innerHTML = `<div class="ingrid-name">${ing.name}</div><div class="ingrid-price">+${ing.price} ₽</div>`;
+        div.addEventListener('click', () => addIngredient(ing));
+        return div;
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.btn-tab').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.btn-tab[data-tab="${tabId}"]`).classList.add('active');
+    }
+
+    function placeOrder() {
+        if (!currentUser) { alert("Войдите в аккаунт для оформления заказа"); return; }
+        if (!currentBurgerIngredients.length && !selectedDrinks.size && !selectedSnacks.size) {
+            alert("Добавьте хотя бы один товар в заказ"); return;
+        }
+        const burgerTotal = currentBurgerIngredients.reduce((s,i)=>s+i.price,0);
+        const drinksTotal = getDrinksTotal();
+        const snacksTotal = getSnacksTotal();
+        const total = burgerTotal + drinksTotal + snacksTotal + selectedZone.price;
+        
+        const order = {
+            user: currentUser.nickname,
+            email: currentUser.email,
+            address: deliveryAddress,
+            zone: selectedZone.name,
+            distance: selectedZone.dist,
+            delivery: selectedZone.price,
+            burger: currentBurgerIngredients.map(i=>i.name),
+            drinks: Array.from(selectedDrinks).map(id=>DRINKS.find(d=>d.id===id)?.name).filter(Boolean),
+            snacks: Array.from(selectedSnacks).map(id=>SNACKS.find(s=>s.id===id)?.name).filter(Boolean),
+            total: total,
+            time: new Date().toLocaleString()
+        };
+        
+        const orders = JSON.parse(localStorage.getItem('burger_orders') || '[]');
+        orders.push(order);
+        localStorage.setItem('burger_orders', JSON.stringify(orders));
+        
+        alert(`Заказ оформлен!\nСумма: ${total} ₽\nДоставка: ${selectedZone.name}\nРасстояние: ${selectedZone.dist.toFixed(1)} км\nАдрес: ${deliveryAddress}`);
+        console.log('Заказ:', order);
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); document.querySelector(`#${id} .error-msg`).innerText = ''; }
+
+    function init() {
+        renderIngredientGroups();
+        
+        document.querySelectorAll('.btn-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchTab(btn.getAttribute('data-tab'));
+            });
+        });
+        
+        const sessionRestored = restoreSession();
+        if (sessionRestored && currentUser) {
+            updateAuthUI();
+            renderSavedBurgers();
+        } else {
+            updateAuthUI();
+            renderSavedBurgers();
+        }
+        
+        renderAll();
+        updateBurgerPreview();
+        
+        document.getElementById('deliveryAddress').value = deliveryAddress;
+        document.getElementById('calcDeliveryBtn').addEventListener('click', () => {
+            const addr = document.getElementById('deliveryAddress').value.toLowerCase();
+            let found = DELIVERY_ZONES.find(z => addr.includes(z.name.toLowerCase()));
+            if (found) {
+                selectedZone = found;
+                deliveryAddress = addr;
+                renderMap();
+                updateTotals();
+            } else {
+                alert('Район не найден. Выберите зону на карте.');
+            }
+        });
+        
+        document.getElementById('resetBurgerBtn').onclick = resetBurger;
+        document.getElementById('saveBurgerBtn').onclick = saveBurger;
+        document.getElementById('orderBtn').onclick = placeOrder;
+        
+        document.getElementById('showLoginModalBtn').onclick = () => openModal('loginModal');
+        document.getElementById('showRegisterModalBtn').onclick = () => openModal('registerModal');
+        document.getElementById('logoutBtn').onclick = logout;
+        
+        document.getElementById('closeLoginModal').onclick = () => closeModal('loginModal');
+        document.getElementById('submitLoginBtn').onclick = () => {
+            const res = login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+            if(res.success) { 
+                setCurrentUser(res.user); 
+                closeModal('loginModal'); 
+                document.getElementById('loginEmail').value=''; 
+                document.getElementById('loginPassword').value=''; 
+            } else {
+                document.getElementById('loginError').innerText = res.message;
+            }
+        };
+        
+        document.getElementById('closeRegisterModal').onclick = () => closeModal('registerModal');
+        document.getElementById('submitRegisterBtn').onclick = () => {
+            const res = register(document.getElementById('regEmail').value, document.getElementById('regNickname').value, document.getElementById('regPassword').value);
+            if(res.success) { 
+                setCurrentUser(res.user); 
+                closeModal('registerModal'); 
+                document.getElementById('regEmail').value=''; 
+                document.getElementById('regNickname').value=''; 
+                document.getElementById('regPassword').value=''; 
+            } else {
+                document.getElementById('registerError').innerText = res.message;
+            }
+        };
+        
+        updateTotals();
+    }
+    
+    init();
+</script>
+</body>
+</html>
